@@ -13,7 +13,7 @@ const App = () => {
         password,
       });
 
-      console.log(data.data.user);
+      console.log(data);
     } catch (err) {
       console.log((err as Error).message);
     }

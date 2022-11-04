@@ -25,9 +25,9 @@ axios.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    const message = error.message || 'Unknown Error.';
+    const message = error.response.data.message || 'Unknown Error';
 
-    return Promise.reject(error);
+    throw Error(message);
   },
 );
 
