@@ -1,9 +1,18 @@
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import axios from './lib/axios';
+import socket from './lib/socket';
 
 const App = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  socket.connect();
+
+  useEffect(() => {
+    socket.on('test', ({ message }) => {
+      console.log(message);
+    });
+  }, []);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -13,7 +22,7 @@ const App = () => {
         password,
       });
 
-      console.log(data);
+      console.log(data.data);
     } catch (err) {
       console.log((err as Error).message);
     }
