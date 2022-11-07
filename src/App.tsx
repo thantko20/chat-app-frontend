@@ -6,24 +6,32 @@ const App = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  socket.connect();
-
   useEffect(() => {
-    socket.on('test', ({ message }) => {
-      console.log(message);
+    socket.on('connect', () => {
+      console.log(socket);
     });
+
+    socket.on('test', ({ userId }) => {
+      console.log(userId);
+    });
+
+    return () => {
+      socket.off('connect');
+      socket.off('test');
+    };
   }, []);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const data = await axios.post('/auth/login', {
+      const data = (await axios.post('/auth/login', {
         email,
         password,
-      });
-
-      console.log(data.data);
+      })) as { userId: string; token: string };
+      socket.auth = { userId: data.userId };
+      socket.connect();
     } catch (err) {
+      socket.disconnect();
       console.log((err as Error).message);
     }
   };
