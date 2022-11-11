@@ -4,6 +4,11 @@ import storage from '../utils/storage';
 
 const socket = io('localhost:5000', {
   autoConnect: false,
+  auth: (cb: any) => {
+    cb({
+      token: storage.getToken(),
+    });
+  },
 });
 
 export default socket;
