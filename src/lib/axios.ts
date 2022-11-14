@@ -22,7 +22,7 @@ const axios = mainAxios.create({
 axios.interceptors.request.use(authRequestInterceptor);
 axios.interceptors.response.use(
   (response) => {
-    return response.data;
+    return response.data.data;
   },
   (error) => {
     const message = error.response.data.message || 'Unknown Error';
