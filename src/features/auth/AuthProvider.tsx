@@ -6,6 +6,7 @@ import {
   useReducer,
 } from 'react';
 import axios from '../../lib/axios';
+import storage from '../../utils/storage';
 import { IUser } from './types';
 
 export type TAuthState = {
@@ -14,7 +15,7 @@ export type TAuthState = {
 };
 
 export type TAuthContextValue = TAuthState & {
-  saveUser: (user: IUser) => void;
+  saveUser: (user: IUser, token?: string) => void;
   removeUser: () => void;
 };
 
@@ -25,31 +26,44 @@ const initialAuthState: TAuthState = {
 
 const initialAuthContextValue: TAuthContextValue = {
   user: initialAuthState.user,
-  saveUser: (user: IUser) => {},
+  saveUser: (user: IUser, token?: string) => {},
   removeUser: () => {},
   isCheckingUser: initialAuthState.isCheckingUser,
 };
 
+const authActionTypes = {
+  SAVE_USER: 'SAVE_USER',
+  REMOVE_USER: 'REMOVE_USER',
+  CHECKING_USER: 'CHECKING_USER',
+} as const;
+
+enum AuthActionTypes {
+  SAVE_USER = 'SAVE_USER',
+  REMOVE_USER = 'REMOVE_USER',
+  CHECKING_USER = 'CHECKING_USER',
+}
+
 type TAuthAction = {
-  type: 'SAVE_USER' | 'REMOVE_USER' | 'CHECKING_USER';
+  // type: keyof typeof authActionTypes;
+  type: AuthActionTypes;
   payload?: IUser | null;
 };
 
 const authReducer = (state: TAuthState, action: TAuthAction): TAuthState => {
   switch (action.type) {
-    case 'SAVE_USER': {
+    case authActionTypes.SAVE_USER: {
       return {
         user: action.payload,
         isCheckingUser: false,
       };
     }
-    case 'REMOVE_USER': {
+    case authActionTypes.REMOVE_USER: {
       return {
         user: null,
         isCheckingUser: false,
       };
     }
-    case 'CHECKING_USER': {
+    case authActionTypes.CHECKING_USER: {
       return {
         user: null,
         isCheckingUser: true,
@@ -70,31 +84,34 @@ const useAuthState = () => {
   useEffect(() => {
     const checkUser = async () => {
       try {
-        dispatch({ type: 'CHECKING_USER' });
-        const res = await axios.get('/auth/user');
-
-        saveUser(res.data as IUser);
+        dispatch({ type: AuthActionTypes.CHECKING_USER });
+        const res: IUser = await axios.get('/auth/user');
+        saveAuth(res);
       } catch (err) {
-        removeUser();
+        removeAuth();
       }
     };
 
     checkUser();
   }, []);
 
-  const saveUser = (user: IUser) => {
-    dispatch({ type: 'SAVE_USER', payload: user });
+  const saveAuth = (user: IUser, token?: string) => {
+    dispatch({ type: AuthActionTypes.SAVE_USER, payload: user });
+    if (token) {
+      storage.setToken(token);
+    }
   };
 
-  const removeUser = () => {
-    dispatch({ type: 'REMOVE_USER' });
+  const removeAuth = () => {
+    dispatch({ type: AuthActionTypes.REMOVE_USER });
+    storage.clearToken();
   };
 
   return {
     user,
     isCheckingUser,
-    saveUser,
-    removeUser,
+    saveUser: saveAuth,
+    removeUser: removeAuth,
   };
 };
 
