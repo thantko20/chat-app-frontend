@@ -15,8 +15,8 @@ export type TAuthState = {
 };
 
 export type TAuthContextValue = TAuthState & {
-  saveUser: (user: IUser, token?: string) => void;
-  removeUser: () => void;
+  saveAuth: (user: IUser) => void;
+  removeAuth: () => void;
 };
 
 const initialAuthState: TAuthState = {
@@ -26,8 +26,8 @@ const initialAuthState: TAuthState = {
 
 const initialAuthContextValue: TAuthContextValue = {
   user: initialAuthState.user,
-  saveUser: (user: IUser, token?: string) => {},
-  removeUser: () => {},
+  saveAuth: (user: IUser) => {},
+  removeAuth: () => {},
   isCheckingUser: initialAuthState.isCheckingUser,
 };
 
@@ -37,15 +37,8 @@ const authActionTypes = {
   CHECKING_USER: 'CHECKING_USER',
 } as const;
 
-enum AuthActionTypes {
-  SAVE_USER = 'SAVE_USER',
-  REMOVE_USER = 'REMOVE_USER',
-  CHECKING_USER = 'CHECKING_USER',
-}
-
 type TAuthAction = {
-  // type: keyof typeof authActionTypes;
-  type: AuthActionTypes;
+  type: keyof typeof authActionTypes;
   payload?: IUser | null;
 };
 
@@ -84,10 +77,11 @@ const useAuthState = () => {
   useEffect(() => {
     const checkUser = async () => {
       try {
-        dispatch({ type: AuthActionTypes.CHECKING_USER });
+        dispatch({ type: authActionTypes.CHECKING_USER });
         const res: IUser = await axios.get('/auth/user');
         saveAuth(res);
       } catch (err) {
+        storage.clearToken();
         removeAuth();
       }
     };
@@ -95,23 +89,21 @@ const useAuthState = () => {
     checkUser();
   }, []);
 
-  const saveAuth = (user: IUser, token?: string) => {
-    dispatch({ type: AuthActionTypes.SAVE_USER, payload: user });
-    if (token) {
-      storage.setToken(token);
-    }
+  // Should not inject socket into auth provider
+  // TODO: Refactor
+  const saveAuth = (user: IUser) => {
+    dispatch({ type: authActionTypes.SAVE_USER, payload: user });
   };
 
   const removeAuth = () => {
-    dispatch({ type: AuthActionTypes.REMOVE_USER });
-    storage.clearToken();
+    dispatch({ type: authActionTypes.REMOVE_USER });
   };
 
   return {
     user,
     isCheckingUser,
-    saveUser: saveAuth,
-    removeUser: removeAuth,
+    saveAuth,
+    removeAuth,
   };
 };
 

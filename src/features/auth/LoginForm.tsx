@@ -6,6 +6,7 @@ import * as z from 'zod';
 import { Button } from '../../components/Button';
 import { FieldWrapper } from '../../components/FieldWrapper';
 import { Form } from '../../components/Form';
+import storage from '../../utils/storage';
 import { useLogin } from './api/useLogin';
 import { useAuth } from './AuthProvider';
 
@@ -28,13 +29,14 @@ export const LoginForm = () => {
 
   const mutation = useLogin();
   const navigate = useNavigate();
-  const { saveUser } = useAuth();
+  const { saveAuth } = useAuth();
 
   const onSubmit: SubmitHandler<TLoginForm> = (data) => {
     mutation.mutate(data, {
       onSuccess: ({ user, token }) => {
+        saveAuth(user);
         toast.success('Login Successful.');
-        saveUser(user, token);
+        storage.setToken(token);
         navigate('/');
       },
     });

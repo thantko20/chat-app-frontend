@@ -2,7 +2,7 @@ import { ButtonHTMLAttributes, forwardRef } from 'react';
 import clsx from 'clsx';
 
 const variants = {
-  primary: 'bg-indigo-600 text-white hover:bg-indigo-500',
+  primary: 'bg-indigo-500 text-white hover:bg-indigo-600',
   secondary:
     'bg-transparent text-inherit border-2 border-indigo-500 hover:text-white hover:bg-indigo-600',
 };
