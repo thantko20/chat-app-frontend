@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { createBrowserRouter, Navigate, RouteProps } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import App from './App';
 import { useAuth } from './features/auth/AuthProvider';
 import Conversation from './pages/Conversation';
@@ -20,7 +20,11 @@ const ConditionalRoute = ({
   const { user, isCheckingUser } = useAuth();
 
   if (isCheckingUser) {
-    return <p>Loading Wait mtfk</p>;
+    return (
+      <div className='fixed inset-0 bg-blue-300 flex justify-center items-center text-red-400 text-3xl'>
+        We're checking the auth state mtfk
+      </div>
+    );
   }
 
   return (
@@ -50,7 +54,7 @@ const router = createBrowserRouter([
         element: <ConditionalRoute page={<Main />} routeType='protected' />,
       },
       {
-        path: 'conversations/:friendId',
+        path: 'conversations/friend/:id',
         element: (
           <ConditionalRoute page={<Conversation />} routeType='protected' />
         ),

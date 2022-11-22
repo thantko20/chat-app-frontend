@@ -1,14 +1,22 @@
-import { Button } from '../components/Button';
-import { useLogout } from '../features/auth/api/useLogout';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../features/auth/AuthProvider';
 
 const Main = () => {
-  const logout = useLogout();
-  return (
-    <div>
-      Main Page
-      <Button onClick={logout}>Logout</Button>
-    </div>
-  );
+  const { user, isCheckingUser } = useAuth();
+
+  if (isCheckingUser) {
+    return <>Loading</>;
+  }
+
+  if (user) {
+    return (
+      <div>
+        <h2>Main Page</h2>
+      </div>
+    );
+  }
+
+  return <Navigate to='/auth/login' />;
 };
 
 export default Main;
