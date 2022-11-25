@@ -1,25 +1,21 @@
-import clsx from 'clsx';
 import { ReactNode } from 'react';
+import { VStack, Box, Heading } from '@chakra-ui/react';
 
 export type FormProps = {
   title?: string;
-  className?: string;
   children?: ReactNode;
   onSubmit: () => {};
 };
 
-export const Form = ({
-  onSubmit,
-  title = '',
-  className = '',
-  children,
-}: FormProps) => {
+export const Form = ({ onSubmit, title = '', children }: FormProps) => {
   return (
-    <div className={clsx('p-2', className)}>
-      <h2 className='text-lg font-medium text-gray-800'>{title}</h2>
-      <form onSubmit={onSubmit} className='mt-2 flex flex-col gap-4'>
+    <Box>
+      <Heading as='h2' fontSize='2xl' fontWeight='semibold'>
+        {title}
+      </Heading>
+      <VStack as='form' onSubmit={onSubmit} gap={4} mt={8} alignItems='stretch'>
         {children}
-      </form>
-    </div>
+      </VStack>
+    </Box>
   );
 };

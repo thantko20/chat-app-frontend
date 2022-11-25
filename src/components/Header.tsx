@@ -1,7 +1,8 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Box, Button, HStack, Link } from '@chakra-ui/react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useLogout } from '../features/auth/api/useLogout';
 import { useAuth } from '../features/auth/AuthProvider';
-import { Button } from './Button';
+import ConfirmationDialog from './ConfirmationDialog';
 
 const Header = () => {
   const { user } = useAuth();
@@ -10,35 +11,64 @@ const Header = () => {
 
   return (
     <header>
-      <div className='sm:container mx-auto px-2 py-4 flex justify-between'>
-        <span className='font-bold text-3xl text-blue-600'>Logo</span>
-        <nav className='flex gap-4 items-center'>
+      <HStack maxW='xl' mx='auto' px='2' py='4' justifyContent='space-between'>
+        <Box color='green.400' fontSize='2xl' fontWeight='semibold'>
+          Logo
+        </Box>
+        <HStack as='nav'>
           {user && (
-            <ul className='flex gap-6'>
+            <HStack as='ul' listStyleType='none'>
               <li>
-                <Link to='/'>Home</Link>
+                <Link to='/' as={RouterLink} colorScheme='green'>
+                  Home
+                </Link>
               </li>
               <li>
-                <Link to='/friends'>Friends</Link>
+                <Link to='/friends' as={RouterLink} colorScheme='green'>
+                  Friends
+                </Link>
               </li>
-            </ul>
+            </HStack>
           )}
-          <div className='flex gap-2'>
+          <HStack gap={4}>
             {user ? (
               <>
-                <Button onClick={logout}>Logout</Button>
+                <ConfirmationDialog
+                  triggerButton={
+                    <Button variant='ghost' colorScheme='red'>
+                      Logout
+                    </Button>
+                  }
+                  confirmButton={
+                    <Button onClick={logout} colorScheme='red'>
+                      Logout
+                    </Button>
+                  }
+                  title='Are you sure to logout?'
+                  body='This action cannot be undone.'
+                />
               </>
             ) : (
               <>
-                <Button onClick={() => navigate('/auth/login')}>Login</Button>
-                <Button onClick={() => navigate('/auth/register')}>
+                <Button
+                  onClick={() => navigate('/auth/login')}
+                  variant='ghost'
+                  colorScheme='green'
+                >
+                  Login
+                </Button>
+                <Button
+                  onClick={() => navigate('/auth/register')}
+                  variant='outline'
+                  colorScheme='green'
+                >
                   Register
                 </Button>
               </>
             )}
-          </div>
-        </nav>
-      </div>
+          </HStack>
+        </HStack>
+      </HStack>
     </header>
   );
 };

@@ -1,3 +1,4 @@
+import { Box } from '@chakra-ui/react';
 import { Outlet } from 'react-router-dom';
 import Header from './components/Header';
 
@@ -5,9 +6,9 @@ const App = () => {
   return (
     <div>
       <Header />
-      <main className='sm:container mx-auto'>
+      <Box maxW='xl' mx='auto'>
         <Outlet />
-      </main>
+      </Box>
     </div>
   );
 };
