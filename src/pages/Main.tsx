@@ -1,7 +1,7 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../features/auth/AuthProvider';
 
-const Main = () => {
+const MainPage = () => {
   const { user, isCheckingUser } = useAuth();
 
   if (isCheckingUser) {
@@ -19,4 +19,4 @@ const Main = () => {
   return <Navigate to='/auth/login' />;
 };
 
-export default Main;
+export default MainPage;

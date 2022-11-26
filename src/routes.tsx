@@ -2,11 +2,11 @@ import { ReactNode } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import App from './App';
 import { useAuth } from './features/auth/AuthProvider';
-import Conversation from './pages/Conversation';
-import Friends from './pages/Friends';
-import Login from './pages/Login';
-import Main from './pages/Main';
-import Register from './pages/Register';
+import ConversationPage from './pages/Conversation';
+import FriendsPage from './pages/Friends';
+import LoginPage from './pages/Login';
+import MainPage from './pages/Main';
+import RegisterPage from './pages/Register';
 
 type ConditionalRouteProps = {
   routeType: 'auth' | 'protected';
@@ -51,25 +51,27 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <ConditionalRoute page={<Main />} routeType='protected' />,
+        element: <ConditionalRoute page={<MainPage />} routeType='protected' />,
       },
       {
-        path: 'conversations/friend/:id',
+        path: 'conversations/friend/:friendId',
         element: (
-          <ConditionalRoute page={<Conversation />} routeType='protected' />
+          <ConditionalRoute page={<ConversationPage />} routeType='protected' />
         ),
       },
       {
         path: 'friends',
-        element: <ConditionalRoute page={<Friends />} routeType='protected' />,
+        element: (
+          <ConditionalRoute page={<FriendsPage />} routeType='protected' />
+        ),
       },
       {
         path: 'auth/register',
-        element: <ConditionalRoute page={<Register />} routeType='auth' />,
+        element: <ConditionalRoute page={<RegisterPage />} routeType='auth' />,
       },
       {
         path: 'auth/login',
-        element: <ConditionalRoute page={<Login />} routeType='auth' />,
+        element: <ConditionalRoute page={<LoginPage />} routeType='auth' />,
       },
     ],
   },

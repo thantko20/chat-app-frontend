@@ -6,7 +6,7 @@ const App = () => {
   return (
     <div>
       <Header />
-      <Box maxW='xl' mx='auto'>
+      <Box maxW='xl' mx='auto' py={6} px={2}>
         <Outlet />
       </Box>
     </div>
