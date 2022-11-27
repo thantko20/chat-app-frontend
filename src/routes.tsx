@@ -1,3 +1,4 @@
+import { Box, Spinner } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import App from './App';
@@ -21,9 +22,16 @@ const ConditionalRoute = ({
 
   if (isCheckingUser) {
     return (
-      <div className='fixed inset-0 bg-blue-300 flex justify-center items-center text-red-400 text-3xl'>
-        We're checking the auth state mtfk
-      </div>
+      <Box
+        position='fixed'
+        inset={0}
+        h='full'
+        w='full'
+        display='grid'
+        placeContent='center'
+      >
+        <Spinner colorScheme='green' size='xl' />
+      </Box>
     );
   }
 

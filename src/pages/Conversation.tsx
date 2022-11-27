@@ -7,7 +7,6 @@ const ConversationPage = () => {
   const {
     state: { friend },
   } = useLocation();
-  console.log(friend);
 
   return <Conversation friendId={friendId as string} friend={friend} />;
 };

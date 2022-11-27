@@ -1,9 +1,6 @@
 import {
-  Box,
-  Divider,
   Flex,
   Heading,
-  HStack,
   IconButton,
   Skeleton,
   Text,
@@ -39,11 +36,13 @@ const FriendListContainer = () => {
                 rounded='base'
                 alignItems='center'
               >
-                <VStack alignItems='flex-start'>
+                <VStack alignItems='flex-start' spacing={0}>
                   <Heading as='h3' fontSize='xl'>
                     {friendTo?.firstName + ' ' + friendTo?.lastName}
                   </Heading>
-                  <Text>@{friendTo?.handleName}</Text>
+                  <Text fontSize='sm' fontStyle='italic' color='blackAlpha.600'>
+                    @{friendTo?.handleName}
+                  </Text>
                 </VStack>
                 <IconButton
                   icon={<BiMessageSquareEdit />}
