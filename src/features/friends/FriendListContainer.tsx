@@ -27,40 +27,38 @@ const FriendListContainer = () => {
       {data && (
         <>
           {data.map(({ friendTo, ...friendship }) => (
-            <>
-              <Flex
-                key={friendship.id}
-                justifyContent='space-between'
-                bgColor='gray.100'
-                p={2}
-                rounded='base'
-                alignItems='center'
-              >
-                <VStack alignItems='flex-start' spacing={0}>
-                  <Heading as='h3' fontSize='xl'>
-                    {friendTo?.firstName + ' ' + friendTo?.lastName}
-                  </Heading>
-                  <Text fontSize='sm' fontStyle='italic' color='blackAlpha.600'>
-                    @{friendTo?.handleName}
-                  </Text>
-                </VStack>
-                <IconButton
-                  icon={<BiMessageSquareEdit />}
-                  aria-label='go to the conversation'
-                  onClick={() =>
-                    navigate(`/conversations/friend/${friendTo?.id}`, {
-                      state: {
-                        friend: friendTo,
-                      },
-                    })
-                  }
-                  variant='solid'
-                  colorScheme='green'
-                  rounded='full'
-                  size='sm'
-                />
-              </Flex>
-            </>
+            <Flex
+              key={friendship.id}
+              justifyContent='space-between'
+              bgColor='gray.100'
+              p={2}
+              rounded='base'
+              alignItems='center'
+            >
+              <VStack alignItems='flex-start' spacing={0}>
+                <Heading as='h3' fontSize='xl'>
+                  {friendTo?.firstName + ' ' + friendTo?.lastName}
+                </Heading>
+                <Text fontSize='sm' fontStyle='italic' color='blackAlpha.600'>
+                  @{friendTo?.handleName}
+                </Text>
+              </VStack>
+              <IconButton
+                icon={<BiMessageSquareEdit />}
+                aria-label='go to the conversation'
+                onClick={() =>
+                  navigate(`/conversations/friend/${friendTo?.id}`, {
+                    state: {
+                      friend: friendTo,
+                    },
+                  })
+                }
+                variant='solid'
+                colorScheme='green'
+                rounded='full'
+                size='sm'
+              />
+            </Flex>
           ))}
         </>
       )}

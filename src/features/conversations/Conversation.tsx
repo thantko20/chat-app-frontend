@@ -104,7 +104,7 @@ export const Conversation = ({ friendId, friend }: ConversationProps) => {
   };
 
   useEffect(() => {
-    socket.on('send_message', ({ message }: { message: IMessage }) => {
+    const receiveMessageHandler = ({ message }: { message: IMessage }) => {
       const conversationExists = queryClient.getQueryData([
         'conversations',
         'friend',
@@ -126,9 +126,10 @@ export const Conversation = ({ friendId, friend }: ConversationProps) => {
           }
         },
       );
-    });
+    };
+    socket.on('send_message', receiveMessageHandler);
     return () => {
-      socket.off('send_message');
+      socket.off('send_message', receiveMessageHandler);
     };
   }, []);
 

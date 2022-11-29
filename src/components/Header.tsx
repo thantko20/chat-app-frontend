@@ -34,7 +34,7 @@ const SettingsMenu = () => {
       />
       <MenuList>
         <MenuItem>{`${user?.firstName} ${user?.lastName}`}</MenuItem>
-        <MenuItem>
+        <MenuItem as='div'>
           <ConfirmationDialog
             triggerButton={
               <Button
