@@ -3,17 +3,28 @@ import {
   Flex,
   IconButton,
   Input,
+  InputGroup,
+  InputRightElement,
   Skeleton,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import { useQueryClient } from '@tanstack/react-query';
-import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
+import {
+  ChangeEvent,
+  FormEvent,
+  LegacyRef,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { FiSend } from 'react-icons/fi';
 import { useSocket } from '../../lib/socket';
 import { IUser } from '../auth/types';
 import { useGetFriendConversation } from './api/useGetFriendConversation';
 import { IConversation, IMessage } from './types';
+import toast from 'react-hot-toast';
 
 const MessageInput = ({ friendId }: { friendId: string }) => {
   const [text, setText] = useState('');
@@ -23,17 +34,31 @@ const MessageInput = ({ friendId }: { friendId: string }) => {
     e.preventDefault();
     if (!text) return;
 
+    const message = text;
+    setText('');
+
     socket.emit(
       'send_message',
-      { message: text, toUserId: friendId },
+      { message, toUserId: friendId },
       (responseData: any) => {
-        setText('');
+        if (responseData.status.ok) {
+          toast('Message sent');
+        } else {
+          toast('On no. Message was not sent.');
+        }
       },
     );
   };
 
   return (
-    <Flex as='form' onSubmit={onSubmit}>
+    <Flex
+      as='form'
+      onSubmit={onSubmit}
+      p={4}
+      bgColor='blackAlpha.100'
+      rounded='2xl'
+      alignItems='center'
+    >
       <Input
         type='text'
         name='message'
@@ -41,13 +66,19 @@ const MessageInput = ({ friendId }: { friendId: string }) => {
         variant='flushed'
         onChange={(e: ChangeEvent<HTMLInputElement>) => setText(e.target.value)}
         placeholder='Type your message here.'
+        autoComplete='false'
+        pr={2}
+        size='md'
       />
       <IconButton
         icon={<FiSend />}
         aria-label='send message'
         type='submit'
-        colorScheme='green'
         ml={2}
+        size='sm'
+        colorScheme='green'
+        rounded='full'
+        isDisabled={!text}
       />
     </Flex>
   );
@@ -63,6 +94,7 @@ export const Conversation = ({ friendId, friend }: ConversationProps) => {
   const queryClient = useQueryClient();
   const socket = useSocket();
   const scrollToBottomRef = useRef<HTMLDivElement>(null);
+  const [animationParent] = useAutoAnimate();
 
   const scrollToBottom = () => {
     scrollToBottomRef.current?.scrollIntoView({
@@ -85,11 +117,11 @@ export const Conversation = ({ friendId, friend }: ConversationProps) => {
 
       queryClient.setQueryData(
         ['conversations', 'friend', friendId],
-        (oldData) => {
+        (oldData: IConversation | undefined) => {
           if (oldData) {
             return {
               ...oldData,
-              messages: [message, ...(oldData as IConversation).messages],
+              messages: [message, ...oldData.messages],
             };
           }
         },
@@ -129,6 +161,7 @@ export const Conversation = ({ friendId, friend }: ConversationProps) => {
         overflow='auto'
         borderBottom={1}
         borderColor='blackAlpha.700'
+        mb={2}
       >
         {data === null ? (
           <>Start a conversation por favor</>
@@ -139,6 +172,7 @@ export const Conversation = ({ friendId, friend }: ConversationProps) => {
             direction='column-reverse'
             gap={2}
             h='full'
+            ref={animationParent as LegacyRef<HTMLDivElement>}
           >
             {data?.messages.map((msg, idx) => {
               const isFriendMsg = msg.senderId === friendId;

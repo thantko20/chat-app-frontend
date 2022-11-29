@@ -1,22 +1,14 @@
+import { Box } from '@chakra-ui/react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../features/auth/AuthProvider';
+import ConversationList from '../features/conversations/ConversationList';
 
 const MainPage = () => {
-  const { user, isCheckingUser } = useAuth();
-
-  if (isCheckingUser) {
-    return <>Loading</>;
-  }
-
-  if (user) {
-    return (
-      <div>
-        <h2>Main Page</h2>
-      </div>
-    );
-  }
-
-  return <Navigate to='/auth/login' />;
+  return (
+    <Box>
+      <ConversationList />
+    </Box>
+  );
 };
 
 export default MainPage;
