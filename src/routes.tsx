@@ -3,8 +3,8 @@ import { ReactNode } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import App from './App';
 import { useAuth } from './features/auth/AuthProvider';
+import Contacts from './pages/Contacts';
 import ConversationPage from './pages/Conversation';
-import FriendsPage from './pages/Friends';
 import LoginPage from './pages/Login';
 import MainPage from './pages/Main';
 import RegisterPage from './pages/Register';
@@ -68,10 +68,8 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: 'friends',
-        element: (
-          <ConditionalRoute page={<FriendsPage />} routeType='protected' />
-        ),
+        path: 'contacts',
+        element: <ConditionalRoute page={<Contacts />} routeType='protected' />,
       },
       {
         path: 'auth/register',

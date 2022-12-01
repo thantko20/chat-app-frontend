@@ -84,9 +84,9 @@ const Header = () => {
               />
               <IconButton
                 as={RouterLink}
-                aria-label='friends'
+                aria-label='contacts'
                 icon={<FaUserFriends />}
-                to='/friends'
+                to='/contacts'
                 rounded='full'
                 size='sm'
               />
