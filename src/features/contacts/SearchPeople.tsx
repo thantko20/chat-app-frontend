@@ -1,10 +1,21 @@
-import { Box, Button, HStack, Input } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  HStack,
+  IconButton,
+  Input,
+  StackDivider,
+  VStack,
+} from '@chakra-ui/react';
 import { useQueryClient } from '@tanstack/react-query';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
+import { BsChatDots } from 'react-icons/bs';
+import { IoMdPersonAdd } from 'react-icons/io';
 import { useSocket } from '../../lib/socket';
 import { useAddContact } from './api/useAddContact';
 import { TContactInfo, TSearchedUser } from './types';
+import { Link as RouterLink } from 'react-router-dom';
 
 const SearchPeople = () => {
   const [value, setValue] = useState('');
@@ -75,25 +86,46 @@ const SearchPeople = () => {
   return (
     <div>
       <Input value={value} onChange={(e) => setValue(e.target.value)} />
-      <Box>
+      <VStack alignItems='stretch' mt={4} divider={<StackDivider />}>
         {people &&
           people.map((person) => {
             return (
-              <HStack key={person.id}>
-                <Box>{person.handleName}</Box>
+              <HStack key={person.id} justifyContent='space-between'>
                 <Box>
-                  {person.isInReqUserContacts ? (
-                    'Already in the contacts'
-                  ) : (
-                    <Button onClick={() => addToContact(person.id)}>
-                      Add To Contact
-                    </Button>
+                  <Box fontWeight='semibold'>{`${person.firstName} ${person.lastName}`}</Box>
+                  <Box fontSize='sm' color='gray.600'>
+                    @{person.handleName}
+                  </Box>
+                </Box>
+                <Box>
+                  <IconButton
+                    as={RouterLink}
+                    icon={<BsChatDots />}
+                    aria-label={`chat with ${person.handleName}`}
+                    to={`/conversations/contacts/${person.id}`}
+                    state={{ contactUser: person }}
+                    variant='solid'
+                    colorScheme='green'
+                    rounded='full'
+                    size='sm'
+                  />
+                  {!person.isInReqUserContacts && (
+                    <IconButton
+                      icon={<IoMdPersonAdd />}
+                      aria-label='add to contact'
+                      onClick={() => addToContact(person.id)}
+                      rounded='full'
+                      colorScheme='yellow'
+                      size='sm'
+                      variant='solid'
+                      ml={2}
+                    />
                   )}
                 </Box>
               </HStack>
             );
           })}
-      </Box>
+      </VStack>
     </div>
   );
 };

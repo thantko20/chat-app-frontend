@@ -166,6 +166,7 @@ export const Conversation = ({
         borderBottom={1}
         borderColor='blackAlpha.700'
         mb={2}
+        px={2}
       >
         {data === null ? (
           <>Start a conversation por favor</>
@@ -174,13 +175,17 @@ export const Conversation = ({
             overflow='auto'
             py={4}
             direction='column-reverse'
-            gap={2}
+            gap={3}
             h='full'
             ref={animationParent as LegacyRef<HTMLDivElement>}
           >
             {data?.messages.map((msg, idx) => {
               const isFriendMsg = msg.senderId === friendId;
               const isLastMsg = idx === 0;
+              const isSenderSameInNextMsg =
+                data.messages[idx + 1]?.senderId === msg.senderId;
+              const isSenderSameInLastMsg =
+                data.messages[idx - 1]?.senderId === msg.senderId;
 
               return (
                 <Box
@@ -191,6 +196,7 @@ export const Conversation = ({
                   maxW='60%'
                   ref={isLastMsg ? scrollToBottomRef : null}
                   key={msg.id}
+                  mb={isSenderSameInLastMsg ? -2.5 : 0}
                 >
                   <Text
                     key={msg.id}
