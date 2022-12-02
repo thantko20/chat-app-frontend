@@ -1,15 +1,28 @@
-import { Box } from '@chakra-ui/react';
+import { Box, HStack, IconButton, VStack } from '@chakra-ui/react';
+import { Link as RouterLink } from 'react-router-dom';
 import React from 'react';
 import { useGetContacts } from './api/useGetContacts';
+import { BsChatDots } from 'react-icons/bs';
 
 const ContactsList = () => {
   const { data, isLoading } = useGetContacts();
   return (
-    <div>
+    <VStack alignItems='stretch'>
       {isLoading && 'Getting contacts'}
       {data &&
-        data.map(({ toUser, id }) => <Box key={id}>{toUser.handleName}</Box>)}
-    </div>
+        data.map(({ toUser, id }) => (
+          <HStack key={id}>
+            <Box>{toUser.handleName}</Box>
+            <IconButton
+              as={RouterLink}
+              icon={<BsChatDots />}
+              aria-label={`chat with ${toUser.handleName}`}
+              to={`/conversations/contacts/${toUser.id}`}
+              state={{ contactUser: toUser }}
+            />
+          </HStack>
+        ))}
+    </VStack>
   );
 };
 

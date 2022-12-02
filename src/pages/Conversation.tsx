@@ -3,12 +3,12 @@ import { useLocation, useParams } from 'react-router-dom';
 import { Conversation } from '../features/conversations/Conversation';
 
 const ConversationPage = () => {
-  const { friendId } = useParams();
+  const { userId } = useParams();
   const {
-    state: { friend },
+    state: { contactUser },
   } = useLocation();
 
-  return <Conversation friendId={friendId as string} friend={friend} />;
+  return <Conversation userId={userId as string} contactUser={contactUser} />;
 };
 
 export default ConversationPage;

@@ -67,26 +67,26 @@ const ConversationList = () => {
           </>
         )}
         {data?.map((conversation) => {
-          const friend = conversation.participants.find(
+          const contactUser = conversation.participants.find(
             (participant) => user?.id !== participant.id,
           );
           return (
             <Box
               p={4}
               as={RouterLink}
-              to={`/conversations/friend/${friend?.id}`}
+              to={`/conversations/contacts/${contactUser?.id}`}
               transition='background-color 200ms ease-in, color 100ms ease-in'
               _hover={{
                 bgColor: 'gray.100',
               }}
-              state={{ friend }}
+              state={{ contactUser }}
               key={conversation.id}
             >
               <Heading as='h3' fontSize='xl' fontWeight='semibold'>
-                {friend?.handleName}
+                {contactUser?.handleName}
               </Heading>
               <Text mt={4}>
-                {friend?.id !== user?.id ? 'You: ' : ''}
+                {contactUser?.id !== user?.id ? 'You: ' : ''}
                 <Box as='span' fontStyle='italic' fontWeight='semibold'>
                   {conversation.lastMessage?.text}
                 </Box>

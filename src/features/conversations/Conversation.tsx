@@ -85,11 +85,14 @@ const MessageInput = ({ friendId }: { friendId: string }) => {
 };
 
 export type ConversationProps = {
-  friendId: string;
-  friend: IUser;
+  userId: string;
+  contactUser: IUser;
 };
 
-export const Conversation = ({ friendId, friend }: ConversationProps) => {
+export const Conversation = ({
+  userId: friendId,
+  contactUser: friend,
+}: ConversationProps) => {
   const { data, isLoading } = useGetFriendConversation(friend.id);
   const queryClient = useQueryClient();
   const socket = useSocket();

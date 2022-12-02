@@ -62,7 +62,7 @@ const router = createBrowserRouter([
         element: <ConditionalRoute page={<MainPage />} routeType='protected' />,
       },
       {
-        path: 'conversations/friend/:friendId',
+        path: 'conversations/contacts/:userId',
         element: (
           <ConditionalRoute page={<ConversationPage />} routeType='protected' />
         ),
