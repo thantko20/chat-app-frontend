@@ -34,26 +34,26 @@ const SettingsMenu = () => {
       />
       <MenuList>
         <MenuItem>{`${user?.firstName} ${user?.lastName}`}</MenuItem>
-        <MenuItem as='div'>
-          <ConfirmationDialog
-            triggerButton={
-              <Button
-                variant='unstyled'
-                colorScheme='red'
-                rightIcon={<FiLogOut />}
-              >
-                Logout
-              </Button>
-            }
-            confirmButton={
-              <Button onClick={logout} colorScheme='red'>
-                Logout
-              </Button>
-            }
-            title='Are you sure to logout?'
-            body='This action cannot be undone.'
-          />
-        </MenuItem>
+        <ConfirmationDialog
+          triggerButton={
+            <MenuItem
+              as={Button}
+              variant='unstyled'
+              colorScheme='red'
+              rightIcon={<FiLogOut />}
+              justifyContent='flex-start'
+            >
+              Logout
+            </MenuItem>
+          }
+          confirmButton={
+            <Button onClick={logout} colorScheme='red'>
+              Logout
+            </Button>
+          }
+          title='Are you sure to logout?'
+          body='This action cannot be undone.'
+        />
       </MenuList>
     </Menu>
   );
@@ -90,7 +90,9 @@ const Header = () => {
                 rounded='full'
                 size='sm'
               />
-              <SettingsMenu />
+              <Box>
+                <SettingsMenu />
+              </Box>
             </HStack>
           ) : (
             <HStack gap={2}>

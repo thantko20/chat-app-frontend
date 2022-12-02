@@ -1,6 +1,7 @@
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import React from 'react';
 import ContactsList from '../features/contacts/ContactsList';
+import SearchPeople from '../features/contacts/SearchPeople';
 
 const Contacts = () => {
   return (
@@ -13,7 +14,9 @@ const Contacts = () => {
         <TabPanel>
           <ContactsList />
         </TabPanel>
-        <TabPanel>Search me daddy.</TabPanel>
+        <TabPanel>
+          <SearchPeople />
+        </TabPanel>
       </TabPanels>
     </Tabs>
   );

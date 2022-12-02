@@ -6,3 +6,7 @@ export type TContactInfo = {
   toUserId: string;
   toUser: IUser;
 };
+
+export type TSearchedUser = IUser & {
+  isInReqUserContacts: boolean;
+};
