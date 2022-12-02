@@ -9,6 +9,7 @@ import { SocketProvider } from './lib/socket';
 import './index.css';
 import queryClient from './lib/react-query';
 import router from './routes';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
@@ -16,6 +17,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       <AuthProvider>
         <SocketProvider>
           <QueryClientProvider client={queryClient}>
+            <ReactQueryDevtools initialIsOpen={false} />
             <RouterProvider router={router}></RouterProvider>
           </QueryClientProvider>
         </SocketProvider>
