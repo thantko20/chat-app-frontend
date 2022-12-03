@@ -5,6 +5,7 @@ export default extendTheme({
     global: {
       body: {
         minHeight: '100vh',
+        bgColor: 'gray.100',
       },
     },
   },
