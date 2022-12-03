@@ -57,7 +57,12 @@ const ConversationList = () => {
       <Heading as='h2' fontSize='3xl' fontWeight='semibold'>
         Conversations
       </Heading>
-      <VStack alignItems='stretch' mt={2} divider={<StackDivider />}>
+      <VStack
+        alignItems='stretch'
+        mt={2}
+        divider={<StackDivider />}
+        gap={isLoading ? 2 : 0}
+      >
         {isLoading && (
           <>
             <Skeleton h={10} />
@@ -67,27 +72,39 @@ const ConversationList = () => {
           </>
         )}
         {data?.map((conversation) => {
-          const contactUser = conversation.participants.find(
+          const toUser = conversation.participants.find(
             (participant) => user?.id !== participant.id,
           );
           return (
             <Box
               p={4}
               as={RouterLink}
-              to={`/conversations/contacts/${contactUser?.id}`}
+              to={`/conversations/contacts/${toUser?.id}`}
               transition='background-color 200ms ease-in, color 100ms ease-in'
               _hover={{
                 bgColor: 'gray.100',
               }}
-              state={{ contactUser }}
+              state={{ contactUser: toUser }}
               key={conversation.id}
+              rounded='base'
             >
               <Heading as='h3' fontSize='xl' fontWeight='semibold'>
-                {contactUser?.handleName}
+                {`${toUser?.firstName} ${toUser?.lastName}`}
               </Heading>
-              <Text mt={4}>
-                {contactUser?.id !== user?.id ? 'You: ' : ''}
-                <Box as='span' fontStyle='italic' fontWeight='semibold'>
+              <Text
+                mt={2}
+                fontSize='sm'
+                color='gray.600'
+                overflow='hidden'
+                whiteSpace='nowrap'
+                textOverflow='ellipsis'
+              >
+                {conversation.lastMessage?.senderId === user?.id && (
+                  <Box as='span' fontWeight='semibold'>
+                    You:{' '}
+                  </Box>
+                )}
+                <Box as='span' fontStyle='italic'>
                   {conversation.lastMessage?.text}
                 </Box>
               </Text>
