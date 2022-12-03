@@ -15,46 +15,61 @@ import { useGetConversations } from './api/useGetConversations';
 import { useSocket } from '../../lib/socket';
 import { IConversationCard } from './types';
 import { useQueryClient } from '@tanstack/react-query';
+import { IUser } from '../auth/types';
+import { useConversations } from './api/useConversations';
+
+type ConversationListItemProps = {
+  toUser: IUser;
+  conversation: IConversationCard;
+};
+
+const ConversationListItem = (props: ConversationListItemProps) => {
+  const { toUser, conversation } = props;
+  const { user } = useAuth();
+  return (
+    <Box
+      p={4}
+      as={RouterLink}
+      to={`/conversations/contacts/${toUser?.id}`}
+      transition='background-color 200ms ease-in, color 100ms ease-in'
+      _hover={{
+        bgColor: 'gray.100',
+      }}
+      state={{ contactUser: toUser }}
+      key={conversation.id}
+      rounded='base'
+    >
+      <Heading as='h3' fontSize='xl' fontWeight='semibold'>
+        {`${toUser?.firstName} ${toUser?.lastName}`}
+      </Heading>
+      <Text
+        mt={2}
+        fontSize='sm'
+        color='gray.600'
+        overflow='hidden'
+        whiteSpace='nowrap'
+        textOverflow='ellipsis'
+      >
+        {conversation.lastMessage?.senderId === user?.id && (
+          <Box as='span' fontWeight='semibold'>
+            You:{' '}
+          </Box>
+        )}
+        <Box as='span' fontStyle='italic'>
+          {conversation.lastMessage?.text}
+        </Box>
+      </Text>
+    </Box>
+  );
+};
 
 const ConversationList = () => {
-  const { data, isLoading } = useGetConversations();
   const { user } = useAuth();
-  const socket = useSocket();
-  const queryClient = useQueryClient();
+  const { data, isLoading } = useConversations();
 
-  useEffect(() => {
-    if (data) {
-      socket.on(
-        'conversation_update',
-        ({ conversation }: { conversation: IConversationCard }) => {
-          const conversationIndex = data.findIndex(
-            (con) => con.id === conversation.id,
-          );
-          if (conversationIndex >= 0) {
-            queryClient.setQueryData(
-              ['conversations'],
-              (oldData: IConversationCard[] | undefined) => {
-                if (oldData) {
-                  const tempData = [...oldData];
-                  tempData[conversationIndex] = conversation;
-                  return tempData;
-                }
-              },
-            );
-          } else {
-            queryClient.invalidateQueries(['conversations']);
-          }
-        },
-      );
-    }
-
-    return () => {
-      socket.off('conversations');
-    };
-  }, [data]);
   return (
     <Box>
-      <Heading as='h2' fontSize='3xl' fontWeight='semibold'>
+      <Heading as='h2' fontSize='2xl' fontWeight='semibold'>
         Conversations
       </Heading>
       <VStack
@@ -74,41 +89,9 @@ const ConversationList = () => {
         {data?.map((conversation) => {
           const toUser = conversation.participants.find(
             (participant) => user?.id !== participant.id,
-          );
+          ) as IUser;
           return (
-            <Box
-              p={4}
-              as={RouterLink}
-              to={`/conversations/contacts/${toUser?.id}`}
-              transition='background-color 200ms ease-in, color 100ms ease-in'
-              _hover={{
-                bgColor: 'gray.100',
-              }}
-              state={{ contactUser: toUser }}
-              key={conversation.id}
-              rounded='base'
-            >
-              <Heading as='h3' fontSize='xl' fontWeight='semibold'>
-                {`${toUser?.firstName} ${toUser?.lastName}`}
-              </Heading>
-              <Text
-                mt={2}
-                fontSize='sm'
-                color='gray.600'
-                overflow='hidden'
-                whiteSpace='nowrap'
-                textOverflow='ellipsis'
-              >
-                {conversation.lastMessage?.senderId === user?.id && (
-                  <Box as='span' fontWeight='semibold'>
-                    You:{' '}
-                  </Box>
-                )}
-                <Box as='span' fontStyle='italic'>
-                  {conversation.lastMessage?.text}
-                </Box>
-              </Text>
-            </Box>
+            <ConversationListItem toUser={toUser} conversation={conversation} />
           );
         })}
       </VStack>
