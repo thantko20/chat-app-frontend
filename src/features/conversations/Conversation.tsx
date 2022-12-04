@@ -5,60 +5,28 @@ import {
   HStack,
   IconButton,
   Input,
-  InputGroup,
-  InputRightElement,
   Skeleton,
   Text,
-  VStack,
 } from '@chakra-ui/react';
-import { useQueryClient } from '@tanstack/react-query';
-import {
-  ChangeEvent,
-  FormEvent,
-  LegacyRef,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { ChangeEvent, FormEvent, LegacyRef, useEffect, useState } from 'react';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FiSend } from 'react-icons/fi';
 import { useSocket } from '../../lib/socket';
 import { IUser } from '../auth/types';
 import { useGetFriendConversation } from './api/getConversationWithUser';
-import { IConversation, IConversationCard, IMessage } from './types';
 import toast from 'react-hot-toast';
 import { IoIosArrowBack } from 'react-icons/io';
 import { useScrollTo } from '../../hooks/useScrollTo';
+import { useSendMessage } from './api/sendMessage';
 
 const MessageInput = ({ friendId }: { friendId: string }) => {
-  const [text, setText] = useState('');
-  const socket = useSocket();
-
-  const onSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (!text) return;
-
-    const message = text;
-    setText('');
-
-    socket.emit(
-      'send_message',
-      { message, toUserId: friendId },
-      (responseData: any) => {
-        if (responseData.status.ok) {
-          toast('Message sent');
-        } else {
-          toast('On no. Message was not sent.');
-        }
-      },
-    );
-  };
+  const { text, setText, onSend } = useSendMessage(friendId);
 
   return (
     <Flex
       as='form'
-      onSubmit={onSubmit}
+      onSubmit={onSend}
       p={4}
       bgColor='blackAlpha.400'
       rounded='2xl'
