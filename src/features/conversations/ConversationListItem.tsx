@@ -19,7 +19,7 @@ const ConversationListItem = (props: ConversationListItemProps) => {
       to={`/conversations/contacts/${toUser?.id}`}
       transition='background-color 200ms ease-in, color 100ms ease-in'
       _hover={{
-        bgColor: 'white',
+        bgColor: 'blackAlpha.500',
       }}
       state={{ contactUser: toUser }}
       key={conversation.id}

@@ -1,12 +1,20 @@
-import { extendTheme } from '@chakra-ui/react';
+import { extendTheme, ThemeConfig } from '@chakra-ui/react';
+
+const themeConfig: ThemeConfig = {
+  initialColorMode: 'dark',
+  useSystemColorMode: false,
+};
 
 export default extendTheme({
+  config: themeConfig,
   styles: {
     global: {
       body: {
         minHeight: '100vh',
-        bgColor: 'gray.100',
       },
     },
+  },
+  fonts: {
+    body: `'Poppins', sans-serif`,
   },
 });

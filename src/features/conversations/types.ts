@@ -17,6 +17,8 @@ export interface IMessage {
   text: string;
   createdAt: Date;
   updatedAt: Date;
+  cacheToken?: string | number;
+  isSent?: boolean;
 }
 
 export interface IConversation {

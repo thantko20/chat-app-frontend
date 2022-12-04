@@ -1,6 +1,8 @@
 import {
   Box,
   Flex,
+  Grid,
+  HStack,
   IconButton,
   Input,
   InputGroup,
@@ -19,12 +21,14 @@ import {
   useState,
 } from 'react';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { FiSend } from 'react-icons/fi';
 import { useSocket } from '../../lib/socket';
 import { IUser } from '../auth/types';
 import { useGetFriendConversation } from './api/useGetFriendConversation';
 import { IConversation, IMessage } from './types';
 import toast from 'react-hot-toast';
+import { IoIosArrowBack } from 'react-icons/io';
 
 const MessageInput = ({ friendId }: { friendId: string }) => {
   const [text, setText] = useState('');
@@ -55,7 +59,7 @@ const MessageInput = ({ friendId }: { friendId: string }) => {
       as='form'
       onSubmit={onSubmit}
       p={4}
-      bgColor='blackAlpha.100'
+      bgColor='blackAlpha.400'
       rounded='2xl'
       alignItems='center'
     >
@@ -98,6 +102,7 @@ export const Conversation = ({
   const socket = useSocket();
   const scrollToBottomRef = useRef<HTMLDivElement>(null);
   const [animationParent] = useAutoAnimate();
+  const navigate = useNavigate();
 
   const scrollToBottom = () => {
     scrollToBottomRef.current?.scrollIntoView({
@@ -141,45 +146,64 @@ export const Conversation = ({
   }, [data?.messages]);
 
   return (
-    <Box>
-      <Box
-        fontSize='lg'
-        fontWeight='semibold'
+    <Grid
+      gridTemplateRows='min-content 1fr min-content'
+      position='fixed'
+      inset={0}
+      maxW='2xl'
+      h='100vh'
+      mx='auto'
+      pb={3}
+      alignItems='stretch'
+    >
+      <HStack
         p={2}
         bgColor='green.500'
         color='whiteAlpha.900'
         rounded='sm'
         boxShadow='lg'
       >
-        @{friend.handleName}
-      </Box>
-      {isLoading && (
-        <VStack>
-          <Skeleton h={16} w='full' />
-          <Skeleton h={16} w='full' />
-          <Skeleton h={16} w='full' />
-        </VStack>
-      )}
+        <IconButton
+          icon={<IoIosArrowBack />}
+          aria-label='go back'
+          onClick={() => navigate(-1)}
+          variant='ghost'
+          colorScheme='blackAlpha'
+          color='white'
+          rounded='full'
+        />
+        <Box fontSize='lg' fontWeight='semibold'>
+          @{friend.handleName}
+        </Box>
+      </HStack>
+
       <Box
-        h='calc(100vh - 14rem)'
         overflow='auto'
         borderBottom={1}
         borderColor='blackAlpha.700'
         mb={2}
         px={2}
       >
-        {data === null ? (
-          <>Start a conversation por favor</>
-        ) : (
-          <Flex
-            overflow='auto'
-            py={4}
-            direction='column-reverse'
-            gap={3}
-            h='full'
-            ref={animationParent as LegacyRef<HTMLDivElement>}
-          >
-            {data?.messages.map((msg, idx) => {
+        <Flex
+          overflow='auto'
+          py={4}
+          direction='column-reverse'
+          gap={3}
+          h='full'
+          ref={animationParent as LegacyRef<HTMLDivElement>}
+        >
+          {isLoading ? (
+            <>
+              <Skeleton h={16} w='60%' rounded='base' alignSelf='flex-start' />
+              <Skeleton h={16} w='60%' rounded='base' alignSelf='flex-end' />
+              <Skeleton h={16} w='60%' rounded='base' alignSelf='flex-end' />
+              <Skeleton h={16} w='60%' rounded='base' alignSelf='flex-start' />
+              <Skeleton h={16} w='60%' rounded='base' alignSelf='flex-end' />
+            </>
+          ) : !data ? (
+            <Text textAlign='center'>Start a conversation.</Text>
+          ) : (
+            data?.messages.map((msg, idx) => {
               const isFriendMsg = msg.senderId === friendId;
               const isLastMsg = idx === 0;
               const isSenderSameInNextMsg =
@@ -189,7 +213,7 @@ export const Conversation = ({
 
               return (
                 <Box
-                  bgColor={isFriendMsg ? 'gray.200' : 'green.500'}
+                  bgColor={isFriendMsg ? 'whiteAlpha.300' : 'green.500'}
                   p={2}
                   rounded='2xl'
                   alignSelf={isFriendMsg ? 'flex-start' : 'flex-end'}
@@ -200,18 +224,20 @@ export const Conversation = ({
                 >
                   <Text
                     key={msg.id}
-                    color={isFriendMsg ? 'gray.800' : 'whiteAlpha.900'}
+                    color={isFriendMsg ? 'gray.100' : 'whiteAlpha.900'}
                     fontSize='sm'
                   >
                     {msg.text}
                   </Text>
                 </Box>
               );
-            })}
-          </Flex>
-        )}
+            })
+          )}
+        </Flex>
       </Box>
-      <MessageInput friendId={friendId} />
-    </Box>
+      <Box flex={1}>
+        <MessageInput friendId={friendId} />
+      </Box>
+    </Grid>
   );
 };

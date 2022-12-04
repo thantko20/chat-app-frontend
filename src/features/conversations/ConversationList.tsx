@@ -4,17 +4,14 @@ import {
   Heading,
   Link,
   Skeleton,
+  Slide,
+  SlideFade,
   StackDivider,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import React, { useEffect } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import React, { useState } from 'react';
 import { useAuth } from '../auth/AuthProvider';
-import { useGetConversations } from './api/useGetConversations';
-import { useSocket } from '../../lib/socket';
-import { IConversationCard } from './types';
-import { useQueryClient } from '@tanstack/react-query';
 import { IUser } from '../auth/types';
 import { useConversations } from './api/useConversations';
 import ConversationListItem from './ConversationListItem';
@@ -24,7 +21,7 @@ const ConversationList = () => {
   const { data, isLoading } = useConversations();
 
   return (
-    <Box>
+    <Box position='relative'>
       <Heading as='h2' fontSize='2xl' fontWeight='semibold'>
         Conversations
       </Heading>
@@ -47,7 +44,11 @@ const ConversationList = () => {
             (participant) => user?.id !== participant.id,
           ) as IUser;
           return (
-            <ConversationListItem toUser={toUser} conversation={conversation} />
+            <ConversationListItem
+              key={conversation.id}
+              toUser={toUser}
+              conversation={conversation}
+            />
           );
         })}
       </VStack>

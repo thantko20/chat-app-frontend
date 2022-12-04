@@ -43,6 +43,10 @@ const SearchPeople = () => {
 
   useEffect(() => {
     const receiveUsers = ({ users }: { users: TSearchedUser[] }) => {
+      if (!value) {
+        setPeople([]);
+        return;
+      }
       setPeople(users);
     };
     socket.on('find_users', receiveUsers);
