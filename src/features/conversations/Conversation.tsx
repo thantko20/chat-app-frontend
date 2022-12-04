@@ -25,10 +25,11 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { FiSend } from 'react-icons/fi';
 import { useSocket } from '../../lib/socket';
 import { IUser } from '../auth/types';
-import { useGetFriendConversation } from './api/useGetFriendConversation';
+import { useGetFriendConversation } from './api/getConversationWithUser';
 import { IConversation, IConversationCard, IMessage } from './types';
 import toast from 'react-hot-toast';
 import { IoIosArrowBack } from 'react-icons/io';
+import { useScrollTo } from '../../hooks/useScrollTo';
 
 const MessageInput = ({ friendId }: { friendId: string }) => {
   const [text, setText] = useState('');
@@ -98,53 +99,17 @@ export const Conversation = ({
   contactUser: friend,
 }: ConversationProps) => {
   const { data, isLoading } = useGetFriendConversation(friend.id);
-  const queryClient = useQueryClient();
-  const socket = useSocket();
-  const scrollToBottomRef = useRef<HTMLDivElement>(null);
   const [animationParent] = useAutoAnimate();
   const navigate = useNavigate();
-
-  const scrollToBottom = () => {
-    scrollToBottomRef.current?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'nearest',
-    });
-  };
+  const { ref, scrollTo } = useScrollTo<HTMLDivElement>();
 
   useEffect(() => {
-    const receiveMessageHandler = ({ message }: { message: IMessage }) => {
-      const conversationExists = queryClient.getQueryData([
-        'conversations',
-        'friend',
-        friendId,
-      ]);
-      if (!conversationExists) {
-        queryClient.invalidateQueries(['conversations', 'friend', friendId]);
-        queryClient.invalidateQueries(['conversations']);
-        return;
-      }
-
-      queryClient.setQueryData(
-        ['conversations', 'friend', friendId],
-        (oldData: IConversation | undefined) => {
-          if (oldData) {
-            return {
-              ...oldData,
-              messages: [message, ...oldData.messages],
-            };
-          }
-        },
-      );
-
-      queryClient.invalidateQueries(['conversations']);
+    const scrollToBottom = () => {
+      scrollTo({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
     };
-    socket.on('send_message', receiveMessageHandler);
-    return () => {
-      socket.off('send_message', receiveMessageHandler);
-    };
-  }, []);
-
-  useEffect(() => {
     scrollToBottom();
   }, [data?.messages]);
 
@@ -221,7 +186,7 @@ export const Conversation = ({
                   rounded='2xl'
                   alignSelf={isFriendMsg ? 'flex-start' : 'flex-end'}
                   maxW='60%'
-                  ref={isLastMsg ? scrollToBottomRef : null}
+                  ref={isLastMsg ? ref : null}
                   key={msg.id}
                   mb={isSenderSameInLastMsg ? -2.5 : 0}
                 >
