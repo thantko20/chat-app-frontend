@@ -5,7 +5,7 @@ import SearchPeople from '../features/contacts/SearchPeople';
 
 const Contacts = () => {
   return (
-    <Tabs colorScheme='green' variant='enclosed'>
+    <Tabs colorScheme='green' variant='line'>
       <TabList>
         <Tab>Contacts</Tab>
         <Tab>Search People</Tab>

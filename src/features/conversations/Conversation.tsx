@@ -26,7 +26,7 @@ import { FiSend } from 'react-icons/fi';
 import { useSocket } from '../../lib/socket';
 import { IUser } from '../auth/types';
 import { useGetFriendConversation } from './api/useGetFriendConversation';
-import { IConversation, IMessage } from './types';
+import { IConversation, IConversationCard, IMessage } from './types';
 import toast from 'react-hot-toast';
 import { IoIosArrowBack } from 'react-icons/io';
 
@@ -120,6 +120,7 @@ export const Conversation = ({
       ]);
       if (!conversationExists) {
         queryClient.invalidateQueries(['conversations', 'friend', friendId]);
+        queryClient.invalidateQueries(['conversations']);
         return;
       }
 
@@ -134,6 +135,8 @@ export const Conversation = ({
           }
         },
       );
+
+      queryClient.invalidateQueries(['conversations']);
     };
     socket.on('send_message', receiveMessageHandler);
     return () => {
