@@ -1,18 +1,27 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { Form, useNavigate } from 'react-router-dom';
-import { Button } from '../../components/Button';
-import { FieldWrapper } from '../../components/FieldWrapper';
+import { useNavigate } from 'react-router-dom';
 import { useRegister } from './api/useRegister';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import toast from 'react-hot-toast';
+import {
+  Button,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+} from '@chakra-ui/react';
+import { Form } from '../../components/Form';
 
 const schema = z.object({
-  email: z.string().trim().email(),
-  password: z.string().min(8).max(16),
-  firstName: z.string().trim().min(1),
-  lastName: z.string().trim().min(1),
-  handleName: z.string().trim().min(1),
+  email: z.string().trim().email('Invalid Email.'),
+  password: z
+    .string()
+    .min(8, 'Must have at least 8 characters.')
+    .max(16, 'Must not exceed 16 characters.'),
+  firstName: z.string().trim().min(1, 'First Name is required.'),
+  lastName: z.string().trim().min(1, 'Last Name is required.'),
+  handleName: z.string().trim().min(1, 'Handle is required.'),
 });
 
 export type TRegisterForm = z.infer<typeof schema>;
@@ -41,42 +50,34 @@ export const RegisterForm = () => {
     });
 
   return (
-    <Form
-      onSubmit={handleSubmit(onSubmit)}
-      title='Register'
-      className='max-w-lg mx-auto'
-    >
-      <FieldWrapper
-        type='email'
-        registration={register('email')}
-        label='Email'
-        error={errors.email?.message}
-      />
-      <FieldWrapper
-        type='password'
-        registration={register('password')}
-        label='Password'
-        error={errors.password?.message}
-      />
-      <FieldWrapper
-        type='text'
-        registration={register('firstName')}
-        label='First Name'
-        error={errors.firstName?.message}
-      />
-      <FieldWrapper
-        type='text'
-        registration={register('lastName')}
-        label='Last Name'
-        error={errors.lastName?.message}
-      />
-      <FieldWrapper
-        type='text'
-        registration={register('handleName')}
-        label='Handlename'
-        error={errors.handleName?.message}
-      />
-      <Button type='submit' isLoading={mutation.isLoading}>
+    <Form onSubmit={handleSubmit(onSubmit)} title='Register'>
+      <FormControl isInvalid={!!errors.email}>
+        <FormLabel htmlFor='email'>Email</FormLabel>
+        <Input type='email' id='email' {...register('email')} />
+        <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
+      </FormControl>
+      <FormControl isInvalid={!!errors.password}>
+        <FormLabel htmlFor='password'>Password</FormLabel>
+        <Input type='password' id='password' {...register('password')} />
+        <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
+      </FormControl>
+      <FormControl isInvalid={!!errors.firstName}>
+        <FormLabel htmlFor='firstName'>First Name</FormLabel>
+        <Input type='text' id='firstName' {...register('firstName')} />
+        <FormErrorMessage>{errors.firstName?.message}</FormErrorMessage>
+      </FormControl>
+      <FormControl isInvalid={!!errors.lastName}>
+        <FormLabel htmlFor='lastName'>Last Name</FormLabel>
+        <Input type='text' id='lastName' {...register('lastName')} />
+        <FormErrorMessage>{errors.lastName?.message}</FormErrorMessage>
+      </FormControl>
+      <FormControl isInvalid={!!errors.handleName}>
+        <FormLabel htmlFor='handleName'>Handle</FormLabel>
+        <Input type='text' id='handleName' {...register('handleName')} />
+        <FormErrorMessage>{errors.handleName?.message}</FormErrorMessage>
+      </FormControl>
+
+      <Button type='submit' isLoading={mutation.isLoading} colorScheme='green'>
         Register
       </Button>
     </Form>
