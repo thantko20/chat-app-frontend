@@ -1,12 +1,17 @@
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
 export function useScrollTo<T extends HTMLElement>() {
   const ref = useRef<T>(null);
 
-  return {
-    ref,
-    scrollTo(arg?: boolean | ScrollIntoViewOptions | undefined) {
+  const scrollTo = useCallback(
+    (arg?: boolean | ScrollIntoViewOptions | undefined) => {
       ref.current?.scrollIntoView(arg);
     },
+    [],
+  );
+
+  return {
+    ref,
+    scrollTo,
   };
 }
