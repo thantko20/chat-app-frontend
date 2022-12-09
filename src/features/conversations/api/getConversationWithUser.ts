@@ -2,11 +2,11 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import axios from '../../../lib/axios';
 import { useSocket } from '../../../lib/socket';
-import { IConversation, IMessage } from '../types';
+import { IConversation, IMessage, TDataConversation } from '../types';
 
 const getFriendConversation = (
   friendId: string,
-): Promise<IConversation | null | undefined> => {
+): Promise<TDataConversation | null | undefined> => {
   return axios.get(`/conversations/friend/${friendId}`);
 };
 
@@ -34,11 +34,15 @@ export const useGetFriendConversation = (friendId: string) => {
 
       queryClient.setQueryData(
         ['conversations', 'friend', friendId],
-        (oldData: IConversation | undefined) => {
+        (oldData: TDataConversation | undefined) => {
           if (oldData) {
+            const newMessages = [message, ...oldData.conversation.messages];
             return {
               ...oldData,
-              messages: [message, ...oldData.messages],
+              conversation: {
+                ...oldData.conversation,
+                messages: newMessages,
+              },
             };
           }
         },

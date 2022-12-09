@@ -1,14 +1,17 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from '../../../lib/axios';
+import { TSucessResponseDataType } from '../../../types';
 import { TLoginForm } from '../LoginForm';
 import { IUser } from '../types';
 
-export type TLoginFormReturn = {
+type ReturnAuthInfo = {
+  userId: string;
   token: string;
-  user: IUser;
 };
 
-const login = (formData: TLoginForm): Promise<TLoginFormReturn> => {
+export type TLoginReturn = TSucessResponseDataType<ReturnAuthInfo, 'authInfo'>;
+
+const login = (formData: TLoginForm): Promise<TLoginReturn> => {
   return axios.post('/auth/login', formData);
 };
 

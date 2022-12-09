@@ -1,3 +1,4 @@
+import { TSucessResponseDataType } from '../../types';
 import { IUser } from '../auth/types';
 
 export interface IConversationCard {
@@ -30,3 +31,18 @@ export interface IConversation {
   updatedAt: Date;
   createdAt: Date;
 }
+
+export type TDataConversationCards = TSucessResponseDataType<
+  IConversationCard[],
+  'conversations'
+>;
+
+export type TDataConversation = TSucessResponseDataType<
+  IConversation,
+  'conversation'
+>;
+
+export type TDataConversations = TSucessResponseDataType<
+  IConversation[],
+  'conversations'
+>;

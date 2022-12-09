@@ -14,7 +14,7 @@ import { useRemoveContact } from './api/removeContact';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
 import toast from 'react-hot-toast';
 import { useQueryClient } from '@tanstack/react-query';
-import { TContactInfo } from './types';
+import { TContact } from './types';
 import { IoMdRemoveCircle } from 'react-icons/io';
 
 const ContactsList = () => {
@@ -34,8 +34,8 @@ const ContactsList = () => {
   return (
     <VStack alignItems='stretch' divider={<StackDivider />}>
       {isLoading && 'Getting contacts'}
-      {data &&
-        data.map(({ toUser, id }) => (
+      {data?.contacts &&
+        data.contacts.map(({ toUser, id }) => (
           <HStack key={id} justifyContent='space-between'>
             <Box>
               <Box fontWeight='semibold'>{`${toUser.firstName} ${toUser.lastName}`}</Box>

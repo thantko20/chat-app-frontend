@@ -41,7 +41,7 @@ export const LoginForm = () => {
 
   const onSubmit: SubmitHandler<TLoginForm> = (data) => {
     mutation.mutate(data, {
-      onSuccess: ({ user, token }) => {
+      onSuccess: ({ authInfo: { user, token } }) => {
         saveAuth(user);
         toast.success('Login Successful.');
         storage.setToken(token);

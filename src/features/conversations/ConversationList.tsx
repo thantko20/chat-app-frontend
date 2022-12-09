@@ -39,7 +39,7 @@ const ConversationList = () => {
             <Skeleton h={10} />
           </>
         )}
-        {data?.map((conversation) => {
+        {data?.conversations.map((conversation) => {
           const toUser = conversation.participants.find(
             (participant) => user?.id !== participant.id,
           ) as IUser;

@@ -1,8 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from '../../../lib/axios';
-import { TContactInfo } from '../types';
+import { TContact } from '../types';
 
-const addContact = (userId: string): Promise<TContactInfo> => {
+const addContact = (userId: string): Promise<TContact> => {
   return axios.post(`/contacts/add/${userId}`);
 };
 

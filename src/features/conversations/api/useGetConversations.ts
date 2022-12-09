@@ -1,8 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from '../../../lib/axios';
-import { IConversationCard } from '../types';
+import { TSucessResponseDataType } from '../../../types';
+import { TDataConversationCards } from '../types';
 
-const getConversations = (): Promise<IConversationCard[]> => {
+const getConversations = (): Promise<TDataConversationCards> => {
   return axios.get('/conversations');
 };
 

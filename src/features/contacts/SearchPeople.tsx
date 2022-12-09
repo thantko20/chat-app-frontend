@@ -14,7 +14,7 @@ import { BsChatDots } from 'react-icons/bs';
 import { IoMdPersonAdd } from 'react-icons/io';
 import { useSocket } from '../../lib/socket';
 import { useAddContact } from './api/useAddContact';
-import { TContactInfo, TSearchedUser } from './types';
+import { TContact, TSearchedUser } from './types';
 import { Link as RouterLink } from 'react-router-dom';
 
 const SearchPeople = () => {
@@ -62,7 +62,7 @@ const SearchPeople = () => {
         toast.success('Contact Added.');
         queryClient.setQueryData(
           ['contacts'],
-          (oldData: TContactInfo[] | undefined) => {
+          (oldData: TContact[] | undefined) => {
             if (!oldData) {
               return [data];
             }

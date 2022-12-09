@@ -1,6 +1,7 @@
+import { TSucessResponseDataType } from '../../types';
 import { IUser } from '../auth/types';
 
-export type TContactInfo = {
+export type TContact = {
   id: string;
   fromUserId: string;
   toUserId: string;
@@ -10,3 +11,12 @@ export type TContactInfo = {
 export type TSearchedUser = IUser & {
   isInReqUserContacts: boolean;
 };
+
+export type TDataContact = TSucessResponseDataType<TContact, 'contact'>;
+
+export type TDataContacts = TSucessResponseDataType<TContact[], 'contacts'>;
+
+export type TDataSearchUser = TSucessResponseDataType<
+  TSearchedUser,
+  'contacts'
+>;

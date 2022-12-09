@@ -8,7 +8,14 @@ import {
   Skeleton,
   Text,
 } from '@chakra-ui/react';
-import { ChangeEvent, FormEvent, LegacyRef, useEffect, useState } from 'react';
+import {
+  ChangeEvent,
+  FormEvent,
+  forwardRef,
+  LegacyRef,
+  useEffect,
+  useState,
+} from 'react';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { useNavigate } from 'react-router-dom';
 import { FiSend } from 'react-icons/fi';
@@ -19,6 +26,7 @@ import toast from 'react-hot-toast';
 import { IoIosArrowBack } from 'react-icons/io';
 import { useScrollTo } from '../../hooks/useScrollTo';
 import { useSendMessage } from './api/sendMessage';
+import { IMessage } from './types';
 
 const MessageInput = ({ friendId }: { friendId: string }) => {
   const { text, setText, onSend } = useSendMessage(friendId);
@@ -57,6 +65,46 @@ const MessageInput = ({ friendId }: { friendId: string }) => {
   );
 };
 
+type MessageProps = {
+  isLastMsg: boolean;
+  isFriendMsg: boolean;
+  isSenderSameInNextMsg: boolean;
+  isSenderSameInLastMsg: boolean;
+  message: IMessage;
+};
+
+const Message = forwardRef(
+  (props: MessageProps, ref: LegacyRef<HTMLDivElement>) => {
+    const {
+      isLastMsg,
+      isFriendMsg,
+      isSenderSameInLastMsg,
+      isSenderSameInNextMsg,
+      message,
+    } = props;
+    return (
+      <Box
+        bgColor={isFriendMsg ? 'whiteAlpha.300' : 'green.500'}
+        p={2}
+        rounded='2xl'
+        alignSelf={isFriendMsg ? 'flex-start' : 'flex-end'}
+        maxW='60%'
+        ref={ref}
+        key={message.id}
+        mb={isSenderSameInLastMsg ? -2 : 0}
+      >
+        <Text
+          key={message.id}
+          color={isFriendMsg ? 'gray.100' : 'whiteAlpha.900'}
+          fontSize='sm'
+        >
+          {message.text}
+        </Text>
+      </Box>
+    );
+  },
+);
+
 export type ConversationProps = {
   userId: string;
   contactUser: IUser;
@@ -79,7 +127,7 @@ export const Conversation = ({
       });
     };
     scrollToBottom();
-  }, [data?.messages]);
+  }, [data?.conversation.messages]);
 
   return (
     <Grid
@@ -136,36 +184,26 @@ export const Conversation = ({
               <Skeleton h={16} w='60%' rounded='base' alignSelf='flex-start' />
               <Skeleton h={16} w='60%' rounded='base' alignSelf='flex-end' />
             </>
-          ) : !data ? (
+          ) : !data?.conversation ? (
             <Text textAlign='center'>Start a conversation.</Text>
           ) : (
-            data?.messages.map((msg, idx) => {
+            data?.conversation.messages.map((msg, idx) => {
               const isFriendMsg = msg.senderId === friendId;
               const isLastMsg = idx === 0;
               const isSenderSameInNextMsg =
-                data.messages[idx + 1]?.senderId === msg.senderId;
+                data.conversation.messages[idx + 1]?.senderId === msg.senderId;
               const isSenderSameInLastMsg =
-                data.messages[idx - 1]?.senderId === msg.senderId;
+                data.conversation.messages[idx - 1]?.senderId === msg.senderId;
 
               return (
-                <Box
-                  bgColor={isFriendMsg ? 'whiteAlpha.300' : 'green.500'}
-                  p={2}
-                  rounded='2xl'
-                  alignSelf={isFriendMsg ? 'flex-start' : 'flex-end'}
-                  maxW='60%'
+                <Message
+                  isFriendMsg={isFriendMsg}
+                  isLastMsg={isLastMsg}
+                  isSenderSameInLastMsg={isSenderSameInLastMsg}
+                  isSenderSameInNextMsg={isSenderSameInNextMsg}
+                  message={msg}
                   ref={isLastMsg ? ref : null}
-                  key={msg.id}
-                  mb={isSenderSameInLastMsg ? -2.5 : 0}
-                >
-                  <Text
-                    key={msg.id}
-                    color={isFriendMsg ? 'gray.100' : 'whiteAlpha.900'}
-                    fontSize='sm'
-                  >
-                    {msg.text}
-                  </Text>
-                </Box>
+                />
               );
             })
           )}

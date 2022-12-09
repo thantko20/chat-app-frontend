@@ -78,8 +78,9 @@ const useAuthState = () => {
     const checkUser = async () => {
       try {
         dispatch({ type: authActionTypes.CHECKING_USER });
-        const res: IUser = await axios.get('/auth/user');
-        saveAuth(res);
+        const res: { user: IUser } = await axios.get('/auth/user');
+        console.log(user);
+        saveAuth(res.user);
       } catch (err) {
         storage.clearToken();
         removeAuth();

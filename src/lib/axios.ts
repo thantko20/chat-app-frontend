@@ -1,4 +1,5 @@
 import mainAxios, { AxiosRequestConfig } from 'axios';
+import { TSucessResponseDataType } from '../types';
 import storage from '../utils/storage';
 
 const authRequestInterceptor = (config: AxiosRequestConfig) => {
@@ -22,7 +23,7 @@ const axios = mainAxios.create({
 axios.interceptors.request.use(authRequestInterceptor);
 axios.interceptors.response.use(
   (response) => {
-    return response.data.data;
+    return response.data;
   },
   (error) => {
     const message = error.response.data.message || 'Unknown Error';

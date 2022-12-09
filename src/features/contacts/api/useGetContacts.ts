@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from '../../../lib/axios';
-import { TContactInfo } from '../types';
+import { TContact, TDataContact, TDataContacts } from '../types';
 
-const getContacts = (): Promise<TContactInfo[]> => {
+const getContacts = (): Promise<TDataContacts> => {
   return axios.get('/contacts');
 };
 
