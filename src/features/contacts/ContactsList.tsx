@@ -24,9 +24,9 @@ const ContactsList = () => {
 
   const removeContact = (contactId: string) => {
     removeContactMutation.mutate(contactId, {
-      onSuccess(contacts) {
+      onSuccess(data) {
         toast.success('Contact Removed');
-        queryClient.setQueryData(['contacts'], contacts);
+        queryClient.setQueryData(['contacts'], data);
       },
     });
   };

@@ -1,9 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from '../../../lib/axios';
-import { TContact } from '../types';
+import { TContact, TDataContacts } from '../types';
 
-const removeContact = (contactId: string): Promise<TContact[]> => {
-  return axios.post(`/contacts/delete/${contactId}`);
+const removeContact = (contactId: string): Promise<TDataContacts> => {
+  return axios.delete(`/contacts/${contactId}`);
 };
 
 export const useRemoveContact = () => {
